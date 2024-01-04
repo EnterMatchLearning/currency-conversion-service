@@ -1,0 +1,9 @@
+@from = EUR
+@to = INR
+@quantity = 10
+
+###
+GET http://localhost:8100/currency-conversion/from/{{from}}/to/{{to}}/quantity/{{quantity}}
+
+###
+GET http://localhost:8100/currency-conversion-feign/from/{{from}}/to/{{to}}/quantity/{{quantity}}
