@@ -1,8 +1,10 @@
 package com.example.currencyconversionservice.controller;
 
 import com.example.currencyconversionservice.CurrencyExchangeProxy;
+import com.example.currencyconversionservice.configuration.CurrencyConversionConfiguration;
 import com.example.currencyconversionservice.model.CurrencyConversion;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.Objects;
 class RestTemplateConfiguration {
 
     @Bean
+    @LoadBalanced
     RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
@@ -29,10 +32,14 @@ public class CurrencyConversionController {
 
     private final CurrencyExchangeProxy proxy;
     private final RestTemplate restTemplate;
+    private final CurrencyConversionConfiguration configuration;
 
-    public CurrencyConversionController(CurrencyExchangeProxy proxy, RestTemplate restTemplate) {
+    public CurrencyConversionController(CurrencyExchangeProxy proxy,
+                                        RestTemplate restTemplate,
+                                        CurrencyConversionConfiguration configuration) {
         this.proxy = proxy;
         this.restTemplate = restTemplate;
+        this.configuration = configuration;
     }
 
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
@@ -47,7 +54,7 @@ public class CurrencyConversionController {
         uriVariables.put("to", to);
 
         ResponseEntity<CurrencyConversion> responseEntity = restTemplate.getForEntity(
-                "http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+                configuration.getCurrencyExchangeUrl() + "/currency-exchange/from/{from}/to/{to}",
                 CurrencyConversion.class,
                 uriVariables
         );
