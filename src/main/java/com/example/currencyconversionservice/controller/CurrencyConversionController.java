@@ -3,6 +3,8 @@ package com.example.currencyconversionservice.controller;
 import com.example.currencyconversionservice.CurrencyExchangeProxy;
 import com.example.currencyconversionservice.configuration.CurrencyConversionConfiguration;
 import com.example.currencyconversionservice.model.CurrencyConversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +32,8 @@ class RestTemplateConfiguration {
 @RestController
 public class CurrencyConversionController {
 
+    private final Logger logger = LoggerFactory.getLogger(CurrencyConversionController.class);
+
     private final CurrencyExchangeProxy proxy;
     private final RestTemplate restTemplate;
     private final CurrencyConversionConfiguration configuration;
@@ -48,6 +52,8 @@ public class CurrencyConversionController {
             @PathVariable String to,
             @PathVariable BigDecimal quantity
     ) {
+        //CHANGE-KUBERNETES
+        logger.info("calculateCurrencyConversion called with {} to {} with {}", from, to, quantity);
 
         HashMap<String, String> uriVariables = new HashMap<>();
         uriVariables.put("from", from);
@@ -75,6 +81,9 @@ public class CurrencyConversionController {
             @PathVariable String to,
             @PathVariable BigDecimal quantity
     ) {
+        //CHANGE-KUBERNETES
+        logger.info("calculateCurrencyConversionFeign called with {} to {} with {}", from, to, quantity);
+
         CurrencyConversion currencyConversion = proxy.retrieveExchangeValue(from, to);
 
         return new CurrencyConversion(currencyConversion.getId(),
