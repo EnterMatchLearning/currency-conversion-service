@@ -2,8 +2,14 @@
 @to = INR
 @quantity = 10
 
-###
+### Get currency conversion using rest template to consume currency exchange service
 GET http://localhost:8100/currency-conversion/from/{{from}}/to/{{to}}/quantity/{{quantity}}
 
-###
+### Get currency conversion using feign to consume currency exchange service
 GET http://localhost:8100/currency-conversion-feign/from/{{from}}/to/{{to}}/quantity/{{quantity}}
+
+### Get currency conversion from k8s using rest template to consume currency exchange service
+GET {{host-k8s}}/currency-conversion/from/{{from}}/to/{{to}}/quantity/{{quantity}}
+
+### Get currency conversion from k8s using feign to consume currency exchange service
+GET {{host-k8s}}/currency-conversion-feign/from/{{from}}/to/{{to}}/quantity/{{quantity}}
